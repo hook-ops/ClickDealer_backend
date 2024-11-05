@@ -6,13 +6,18 @@ exports.registerUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: 'Invalid email address' });
+    }
     const [result] = await db.query(
-      'INSERT INTO Users (name, email, role, status, registration_date, referral_id) VALUES (?, ?, ?, ?, NOW(), ?)',
-      [name, email, role, 'pending', null]
+      'INSERT INTO Users (name, email, role, status, registration_date, password) VALUES (?, ?, ?, ?, NOW(), ?)',
+      [name, email, role, 'pending', hashedPassword]
     );
 
     res.status(201).send({ userId: result.insertId });
   } catch (err) {
+    console.log(err)
     res.status(500).send('Error registering user');
   }
 };
