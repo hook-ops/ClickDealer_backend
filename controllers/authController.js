@@ -17,7 +17,8 @@ exports.signup = async (req, res) => {
         city,
         address,
         specialization,
-        niche
+        niche,
+        accountType
       } = req.body;
   
       console.log('Received data:', req.body);
@@ -33,8 +34,8 @@ exports.signup = async (req, res) => {
   
       // Insert the new user into the database with the hashed password
       await db.query(
-        'INSERT INTO users (accountName, password, firstName, lastName, email, phone, country, city, address, specialization, niche) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [accountName, hashedPassword, firstName, lastName, email, phone, country, city, address, specialization, JSON.stringify(niche)]
+        'INSERT INTO users (accountName, password, firstName, lastName, email, phone, country, city, address, specialization, niche, accountType) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [accountName, hashedPassword, firstName, lastName, email, phone, country, city, address, specialization, JSON.stringify(niche), accountType]
       );
   
       res.status(201).json({ message: 'User created successfully' });
