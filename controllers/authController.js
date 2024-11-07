@@ -45,23 +45,23 @@ exports.signup = async (req, res) => {
     }
   };
 
-// exports.signup = (req, res) => {
-//     try {
-//       // Simulate or handle user creation logic
-//       console.log('User signup logic...');
-      
-//       res.status(201).send({ message: 'User signup successful' });
-//     } catch (error) {
-//       console.error('Error during signup process:', error);
-//       // Send detailed error response if needed
-//       res.status(500).send({
-//         message: 'Internal server error',
-//         error: error.message
-//       });
-//     }
-//   };
-  
+// In authController.js
+exports.getUser = async (req, res) => {
+    try {
+      const userId = req.user.userId; // Ensure this matches the payload structure in your JWT
+      const [user] = await db.query('SELECT id, accountName, accountType FROM users WHERE id = ?', [userId]);
 
+      if (user.length > 0) {
+        res.json(user[0]); // Sends user info, including accountType
+      } else {
+        res.status(404).json({ message: 'User not found' });
+      }
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: 'Server error' });
+    }
+};
+  
 // Login controller
 exports.login = async (req, res) => {
     try {
@@ -81,10 +81,11 @@ exports.login = async (req, res) => {
         return res.status(401).json({ message: 'Invalid credentials' });
       }
   
-      // Generate a token
-      const token = jwt.sign({ userId: user[0].id }, process.env.JWT_SECRET, {
-        expiresIn: '1h',
-      });
+      const token = jwt.sign(
+        { userId: user[0].id, accountType: user[0].accountType }, 
+        process.env.JWT_SECRET, 
+        { expiresIn: '1h' }
+    );
   
       console.log('Login successful, token generated.');
       res.status(200).json({ message: 'Login successful', token });

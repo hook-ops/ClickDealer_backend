@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const db = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -38,5 +37,3 @@ exports.loginUser = async (req, res) => {
     res.status(500).send('Error logging in');
   }
 };
-=======
->>>>>>> cc81bec (Display offer data from mysql)
