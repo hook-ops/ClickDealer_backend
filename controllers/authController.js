@@ -69,7 +69,12 @@ exports.login = async (req, res) => {
       console.log('Received login data:', req.body);
   
       // Find user by accountName
-      const [user] = await db.query('SELECT * FROM users WHERE accountName = ?', [accountName]);
+       // Find user by accountName, including accountType field
+      const [user] = await db.query(
+        'SELECT id, accountName, password, accountType FROM users WHERE accountName = ?', 
+        [accountName]
+      );
+
       if (user.length === 0) {
         return res.status(400).json({ message: 'User not found' });
       }
@@ -94,3 +99,21 @@ exports.login = async (req, res) => {
       res.status(500).json({ message: 'Error logging in', error });
     }
   };
+
+
+  // Get user details (protected route)
+exports.getUser = async (req, res) => {
+  try {
+      // Retrieve the user ID from the decoded token
+      const userId = req.user.userId;
+
+      const [user] = await db.query(`SELECT * FROM users WHERE id = ?`, [userId]);
+      
+      if (!user) return res.status(404).json({ message: 'User not found' });
+
+      res.status(200).json( user[0] );
+  } catch (error) {
+      console.error('Error fetching user:', error);
+      res.status(500).json({ message: 'Error fetching user' });
+  }
+};

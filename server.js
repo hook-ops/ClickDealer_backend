@@ -4,6 +4,7 @@ const app = express();
 const multer = require('multer');
 const path = require('path');
 require('dotenv').config();
+// const authenticateToken = require('./middleware/auth');
 
 // Configure Multer for file uploads
 const storage = multer.diskStorage({
@@ -24,7 +25,7 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes); // Public route for authentication
 app.use('/uploads', express.static('uploads'));
-app.use('/api', offerRoutes);
+app.use('/api',   offerRoutes);
 // Protect routes under /api with the authenticateToken middleware
 // app.use('/api', authenticateToken, offerRoutes);
 

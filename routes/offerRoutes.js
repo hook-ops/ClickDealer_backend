@@ -30,4 +30,14 @@ router.post('/offers/apply', authenticateToken, offerController.applyForOffer);
 // Route for advertisers to accept or reject an application
 router.post('/offers/application/update', authenticateToken, offerController.updateApplicationStatus);
 
+// offerRoutes.js
+// Affiliate
+router.get('/offers/pending-campaigns', authenticateToken, offerController.getPendingCampaigns);
+router.get('/offers/my-campaigns', authenticateToken, offerController.getMyCampaigns);
+
+// Advertiser
+router.get('/offers/pending-applications', authenticateToken, offerController.getPendingApplications);
+router.post('/offers/application/decide', authenticateToken, offerController.decideApplication);
+
+
 module.exports = router;
